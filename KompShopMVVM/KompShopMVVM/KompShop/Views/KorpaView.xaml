@@ -1,0 +1,80 @@
+﻿<Page
+    x:Class="KompShopMVVM.KompShop.Views.KorpaView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:KompShopMVVM.KompShop.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:KompShopMVVM.KompShop.Models"
+    mc:Ignorable="d">
+    <!--Page resources sadrzi reusable resurse, kokretno ovdje se koristi kao template za izgled jednog reda u ListView kontroli-->
+    <Page.Resources>
+        <!--models namespace definiran u Page xmlns:local
+        Ako ne prepoznaje StavkaKorpe uraditi build sa xmlns:local u page pa onda unijeti DataType atribut nakon sto je build ispravan-->
+        <DataTemplate x:Key="KomponentaListTemplate"  x:DataType="models:StavkaKorpe">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <!--Auto, ne * jer bi onda redovi bili rasireni do dna forme. Auto zauzima onoliko koliko mu treba-->
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <!--* da na tri jednaka dijela dijeli kolone liste i potrebno je da se kolone rasire max koliko imaju prostora-->
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <!--Iz ViewModela koji je povezan sa Page ce uzeti objekat Komponenta i njen naziv staviti u textblok-->
+                <TextBlock Text="{x:Bind Komponenta.Naziv}" HorizontalAlignment="Left"/>
+                <!--Kolicina i Cijena su direkt u view modelu. POTREBNO JE IMATI PUBLIC GET I SET tj ispravan Property da bi binding radio-->
+                <TextBlock Text="{x:Bind Kolicina}" Grid.Column="1" HorizontalAlignment="Center"/>
+                <TextBlock Text="{x:Bind Cijena}" Grid.Column="2" HorizontalAlignment="Right"/>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+
+    <!--Sve u stack panel jedno ispod drugog, primijetiti da kontrole nemaju svoj naziv jer se nece direkno referencirati u kodu
+    sto je i prednost data bindinga i MVVM paterna-->
+    <StackPanel>
+        <!--Button isto nema click event nego lansira komandu koja ce se realizirati u view model
+        Ovim se kaze da klik buttona treba da lansira komandu UnosKartice a da neko drugi to realzira (ViewModel) -->
+        <Button Content="Unos Kartice" HorizontalAlignment="Stretch" Margin="5,5,5,5"  VerticalAlignment="Top" Command="{Binding Path=UnosKartice}" />
+        <Button Content="Dodaj Komponentu" HorizontalAlignment="Stretch" Margin="5,5,5,5" VerticalAlignment="Top" Command="{Binding Path=DodavanjeKomponente}" />
+        <TextBlock Text="Komponente" Margin="5,5,5,5" FontWeight="Bold" FontSize="18" />
+        <!--Itemtemplate koristi PageResource koji je ranije definiran a source je Lista Stavki u kropi-->
+        <ListView Margin="5,5,5,5"
+            x:Name="RestoraniListView"
+            ItemTemplate="{StaticResource KomponentaListTemplate}" 
+            IsItemClickEnabled="True"
+            ItemsSource="{Binding Korpa.Stavke}" Grid.Column="1">
+            <ListView.Template>
+                <!--Rucno mjenjanje liste kako bi se dodali naslovi (headers) kolona
+                Na ovaj nacin se rucno mogu dodati neke kontrole u listu za specijalne liste.-->
+                <ControlTemplate>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                                <TextBlock HorizontalAlignment="Left" Grid.Column="0">Komponenta</TextBlock>
+                                <TextBlock HorizontalAlignment="Center" Grid.Column="1">Kolicina</TextBlock>
+                                <TextBlock HorizontalAlignment="Right" Grid.Column="2">Cijena</TextBlock>
+                        </Grid>
+                        <!-- Ostatak da bude lista koja je orginalno trebala biti -->
+                        <ItemsPresenter Grid.Row="1"></ItemsPresenter>
+                    </Grid>
+                </ControlTemplate>
+            </ListView.Template>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+    </StackPanel>
+</Page>
