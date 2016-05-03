@@ -1,0 +1,11 @@
+﻿{
+  "FourSquareApiService": 
+    {
+      "options": {
+        "clientId": "KHAWRYD4PJ0LKVSZQF4CEXTX5GK3BDPTWS3XLCTVAYQPK515",
+        "clientSecret": "BSTBTSNVENYHWGGNYGGQ00X33NJNNFTPZVIPOB3LGC1UVXBI",
+        "redirectUri": "https://www.google.ba/"
+      },
+      "serviceName": "FourSquareAPI"
+    }
+}

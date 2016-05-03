@@ -1,0 +1,78 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:ProjekatOoad.Venues.View"
+    xmlns:models="using:ProjekatOoad.Venues.Model"
+    xmlns:rating="using:Bratched.Tools.RatingControl"
+    >
+    <!--
+    Moze se definirati stil koji koristi searchbutton u RestoraniListDetailView
+    Stil definira izgled krontrola, moze se bilo koji vizuelni atribut definirati u stilu
+    -->
+    <Style TargetType="Button" x:Key="redButtonStyle">
+        <Setter Property="Background" Value="red"/>
+    </Style>
+    <!--Template search boxa-->
+    <DataTemplate x:Key="SearchRestoraniTemplate">
+        <Grid>
+            <Grid.Resources>
+                <!--Resource dictionary se moze i ovako inline ubaciti
+                Ali onda vrijedi za SAMO ovaj grid i sve sto se nalazi u njemu
+                -->
+                <ResourceDictionary>
+                    <ResourceDictionary.ThemeDictionaries>
+                        <!--Ako korisnik ima high contrast temu u tom slucaju postaviti ovakav izgled dugmeta-->
+                        <ResourceDictionary x:Key="HighContrastBlack">
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="Red"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="BorderBrush" Value="Blue" />
+                            </Style>
+                        </ResourceDictionary>
+                    </ResourceDictionary.ThemeDictionaries>
+                </ResourceDictionary>
+            </Grid.Resources>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Pretraga Restorana" />
+            <TextBlock Text="Geografska širina" Grid.Row="1"/>
+            <TextBox TextWrapping="Wrap" Text="{Binding SearchOpcije.GeoSirina,Mode=TwoWay}" Grid.Row="2"/>
+            <TextBlock Text="Geografska dužina" Grid.Row="3" />
+            <TextBox TextWrapping="Wrap" Text="{Binding SearchOpcije.GeoDuzina,Mode=TwoWay}" Grid.Row="4"/>
+            <Button Content="Search" HorizontalAlignment="Stretch" Margin="5,5,5,5"  VerticalAlignment="Top" Command="{Binding Path=SearchCommand}" Grid.Row="5"/>
+        </Grid>
+    </DataTemplate>
+    <!--Template detail viewa koji se koristi i u list i detail view da se ne pise 2 puta-->
+    <DataTemplate x:Key="RestoraniDetailViewTemplate">
+        <Grid Margin="10,10,10,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="{Binding Naziv}" Margin="5,5,5,5" Grid.Column="0" FontWeight="Bold" FontSize="16"/>
+            <rating:RatingControl ItemsCount="5" Margin="5,5,5,5" Value="{Binding Rating, Mode=TwoWay}" Grid.Column="1"/>
+            <TextBlock Text="{Binding Rating}" Margin="5,5,5,5" Grid.Column="2" FontWeight="Bold" FontSize="18"/>
+            <TextBlock Text="{Binding Adresa}" Grid.Row="1"  Grid.Column="2" Grid.ColumnSpan="2"/>
+            <TextBlock Text="{Binding Telefon}" Grid.Row="1"  Grid.Column="2" />
+            <TextBlock Text="{Binding Opis}" Grid.Row="2"  Margin="5,5,5,5" Grid.ColumnSpan="3" IsTextSelectionEnabled="True" TextWrapping="Wrap" SelectionHighlightColor="#FFD80A0A" Foreground="#FFD100FF"/>
+            <!--Izgleda da image kontrola moze primiti i string i onda se ponasa kao url tako da converter nije trebalo ni praviti-->
+            <Image HorizontalAlignment="Left" Height="500"  Margin="5,5,5,5" VerticalAlignment="Top"  Source="{Binding Slika}" Grid.Row="3" Grid.ColumnSpan="3"/>
+        </Grid>
+    </DataTemplate>
+</ResourceDictionary>
