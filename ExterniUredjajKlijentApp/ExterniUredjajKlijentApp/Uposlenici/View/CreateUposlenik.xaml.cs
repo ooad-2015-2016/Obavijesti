@@ -24,11 +24,12 @@ namespace ExterniUredjajKlijentApp.Uposlenici.View
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
     public sealed partial class CreateUposlenik : Page { 
-        
+        //nista novo samo DataContext na view model
         UposleniciViewModel uposleniciViewModel;
         public CreateUposlenik()
         {
             this.InitializeComponent();
+            //preview control proslijedjivanje je krsenje MVVM ali nuzno posto Binding ne radi za ovu kontrolu
             uposleniciViewModel = new UposleniciViewModel(PreviewControl);
             this.DataContext = uposleniciViewModel;
         }

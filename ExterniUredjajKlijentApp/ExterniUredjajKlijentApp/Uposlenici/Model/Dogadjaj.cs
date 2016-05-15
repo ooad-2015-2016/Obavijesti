@@ -10,6 +10,7 @@ namespace ExterniUredjajKlijentApp.Uposlenici.Model
     [DataContract]
     class Dogadjaj
     {
+        //zasad neiskoristen, vise je za servis dio da se pokaze foreign key u Entity Framework
         [DataMember]
         public int Id { get; set; }
         [DataMember]

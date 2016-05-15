@@ -7,6 +7,7 @@ using System.Windows.Input;
 
 namespace ExterniUredjajKlijentApp.Uposlenici.Helper
 {
+    //standardni relay command
     public class RelayCommand<T> : ICommand
     {
         private readonly Func<T, bool> _canExecuteMethod;

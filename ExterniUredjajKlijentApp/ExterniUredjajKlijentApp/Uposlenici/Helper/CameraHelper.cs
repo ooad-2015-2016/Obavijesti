@@ -20,20 +20,24 @@ namespace ExterniUredjajKlijentApp.Uposlenici.Helper
 {
     public class CameraHelper:INotifyPropertyChanged
     {
+        //meida capture, glavna variabla koja cuva api
         private MediaCapture mediaCapture;
         public MediaCapture MediaCapture { get { return mediaCapture; } set { mediaCapture = value; OnNotifyPropertyChanged("MediaCapture"); } }
+        //samo za postavke kamere
         private bool _isInitialized;
         private bool _isPreviewing;
         private bool _isRecording;
-
         private bool _externalCamera;
         private bool _mirroringPreview;
         private readonly DisplayRequest _displayRequest = new DisplayRequest();
         public string internalStatus;
+        //Ovdje se cuva zadnja uslikana slika Stream Verzija
         public InMemoryRandomAccessStream Slika { get; set; }
-
+        //Ovdje se cuva zadnja uslikana slika Bitmap Verzija
         public SoftwareBitmapSource SlikaBitmap { get; set; }
+        //Kontrola u view koja prikazuje trenutno stanje kamere, zaobilazak binding
         public CaptureElement PreviewControl { get; set; }
+
         public CameraHelper(CaptureElement previewControl)
         {
             PreviewControl = previewControl;
@@ -42,26 +46,26 @@ namespace ExterniUredjajKlijentApp.Uposlenici.Helper
         {
             if (MediaCapture == null)
             {
-                // Get available devices for capturing pictures
+                // daj sve devices, slicno kao i serial
                 var allVideoDevices = await DeviceInformation.FindAllAsync(DeviceClass.VideoCapture);
-                // Get the desired camera by panel
+                // pokusace prvo pozadinsku kameru mobitela
                 DeviceInformation cameraDevice =
                     allVideoDevices.FirstOrDefault(x => x.EnclosureLocation != null &&
                     x.EnclosureLocation.Panel == Windows.Devices.Enumeration.Panel.Back);
-                // If there is no camera on the specified panel, get any camera
+                // Ako je ne nadje prva kamera koja ima onda se uzima, tj spojena usb kamera
                 cameraDevice = cameraDevice ?? allVideoDevices.FirstOrDefault();
+                //negdje zabiljeziti statuse kad kamera ne radi ili varijabla ili exception, sta je vise pogodno
                 if (cameraDevice == null)
                 {
                     internalStatus = "No camera device found.";
                     return;
                 }
-                // Create MediaCapture and its settings
+                //Inicijalizacija api za mediacapture
                 MediaCapture = new MediaCapture();
-                // Register for a notification when video recording has reached the maximum time and when something goes wrong
                 var mediaInitSettings = new MediaCaptureInitializationSettings { VideoDeviceId = cameraDevice.Id };
-                // Initialize MediaCapture
                 try
                 {
+                    //incijalizirati kameru
                     await MediaCapture.InitializeAsync(mediaInitSettings);
                     _isInitialized = true;
                 }
@@ -74,43 +78,35 @@ namespace ExterniUredjajKlijentApp.Uposlenici.Helper
                     internalStatus = ("Exception when initializing MediaCapture with "+ cameraDevice.Id+ ex.ToString());
                 }
 
-                // If initialization succeeded, start the preview
+                // Ako se incijalizirala, prikazati preview u preview kontroli
                 if (_isInitialized)
                 {
-                    // Figure out where the camera is located
+                    // Kako baratati sa naopakim kamerama, da li prednju ili zadnju kameru na mobitelu treba flipati
                     if (cameraDevice.EnclosureLocation == null || cameraDevice.EnclosureLocation.Panel == Windows.Devices.Enumeration.Panel.Unknown)
                     {
-                        // No information on the location of the camera, assume it's an external camera, not integrated on the device
                         _externalCamera = true;
                     }
                     else
                     {
-                        // Camera is fixed on the device
                         _externalCamera = false;
-
-                        // Only mirror the preview if the camera is on the front panel
                         _mirroringPreview = (cameraDevice.EnclosureLocation.Panel == Windows.Devices.Enumeration.Panel.Front);
                     }
-
                     await StartPreviewAsync();
-
-                    //UpdateCaptureControls();
                 }
             }
         }
 
         private async Task StartPreviewAsync()
         {
-            // Prevent the device from sleeping while the preview is running
+            // dok radi da ne zaspe kamera zbog neaktivnosti
             _displayRequest.RequestActive();
-
-            // Set the preview source in the UI and mirror it if necessary
+            // Kontrola u view krsenje mvvm da se postavi source na trenutni izlaz kamere
             PreviewControl.Source = MediaCapture;
+            //flipanje slike po potrebi
             PreviewControl.FlowDirection = _mirroringPreview ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
-
-            // Start the preview
             try
             {
+                //pokrenuti preview
                 await MediaCapture.StartPreviewAsync();
                 _isPreviewing = true;
             }
@@ -123,9 +119,11 @@ namespace ExterniUredjajKlijentApp.Uposlenici.Helper
 
         public async Task TakePhotoAsync(Action<SoftwareBitmapSource> callback)
         {
+            //kada uslika postaviti svoj stream 
             Slika = new InMemoryRandomAccessStream();
             try
             {
+                //konvertovati uslikano u Software bitmap da se moze prikazati u image kontroli
                 await MediaCapture.CapturePhotoToStreamAsync(ImageEncodingProperties.CreateBmp(), Slika);
                 BitmapDecoder decoder = await BitmapDecoder.CreateAsync(Slika);
                 SoftwareBitmap softwareBitmap = await decoder.GetSoftwareBitmapAsync();
@@ -140,9 +138,8 @@ namespace ExterniUredjajKlijentApp.Uposlenici.Helper
             {
                 Debug.WriteLine("Exception when taking a photo: {0}", ex.ToString());
             }
-
         }
-
+        //observer pokusaj bindinga preview kontrole koja ne slusa
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnNotifyPropertyChanged([CallerMemberName] string memberName = "")
         {
