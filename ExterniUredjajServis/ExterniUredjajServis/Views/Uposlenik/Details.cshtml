@@ -1,0 +1,66 @@
+﻿@model ExterniUredjajServis.Uposlenici.Models.Uposlenik
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Uposlenik</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Ime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Ime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Prezime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Prezime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Pozicija)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Pozicija)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RfidKartica)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RfidKartica)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.KreditnaKartica)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.KreditnaKartica)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Slika)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Slika)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
