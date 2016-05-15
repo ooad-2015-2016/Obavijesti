@@ -1,22 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
+using Windows.Graphics.Imaging;
 using Windows.Media.Capture;
 using Windows.Media.MediaProperties;
 using Windows.Storage.Streams;
 using Windows.System.Display;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace ExterniUredjajKlijentApp.Uposlenici.Helper
 {
-    public class CameraHelper
+    public class CameraHelper:INotifyPropertyChanged
     {
-        private MediaCapture _mediaCapture;
+        private MediaCapture mediaCapture;
+        public MediaCapture MediaCapture { get { return mediaCapture; } set { mediaCapture = value; OnNotifyPropertyChanged("MediaCapture"); } }
         private bool _isInitialized;
         private bool _isPreviewing;
         private bool _isRecording;
@@ -27,16 +32,15 @@ namespace ExterniUredjajKlijentApp.Uposlenici.Helper
         public string internalStatus;
         public InMemoryRandomAccessStream Slika { get; set; }
 
-        CaptureElement PreviewControl{get;set;}
-
-
-        public CameraHelper(CaptureElement cameraElement)
+        public SoftwareBitmapSource SlikaBitmap { get; set; }
+        public CaptureElement PreviewControl { get; set; }
+        public CameraHelper(CaptureElement previewControl)
         {
-            PreviewControl = cameraElement;
+            PreviewControl = previewControl;
         }
         public async Task InitializeCameraAsync()
         {
-            if (_mediaCapture == null)
+            if (MediaCapture == null)
             {
                 // Get available devices for capturing pictures
                 var allVideoDevices = await DeviceInformation.FindAllAsync(DeviceClass.VideoCapture);
@@ -52,13 +56,13 @@ namespace ExterniUredjajKlijentApp.Uposlenici.Helper
                     return;
                 }
                 // Create MediaCapture and its settings
-                _mediaCapture = new MediaCapture();
+                MediaCapture = new MediaCapture();
                 // Register for a notification when video recording has reached the maximum time and when something goes wrong
                 var mediaInitSettings = new MediaCaptureInitializationSettings { VideoDeviceId = cameraDevice.Id };
                 // Initialize MediaCapture
                 try
                 {
-                    await _mediaCapture.InitializeAsync(mediaInitSettings);
+                    await MediaCapture.InitializeAsync(mediaInitSettings);
                     _isInitialized = true;
                 }
                 catch (UnauthorizedAccessException)
@@ -101,13 +105,13 @@ namespace ExterniUredjajKlijentApp.Uposlenici.Helper
             _displayRequest.RequestActive();
 
             // Set the preview source in the UI and mirror it if necessary
-            PreviewControl.Source = _mediaCapture;
+            PreviewControl.Source = MediaCapture;
             PreviewControl.FlowDirection = _mirroringPreview ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
 
             // Start the preview
             try
             {
-                await _mediaCapture.StartPreviewAsync();
+                await MediaCapture.StartPreviewAsync();
                 _isPreviewing = true;
             }
             catch (Exception ex)
@@ -117,12 +121,20 @@ namespace ExterniUredjajKlijentApp.Uposlenici.Helper
 
         }
 
-        public async Task TakePhotoAsync()
+        public async Task TakePhotoAsync(Action<SoftwareBitmapSource> callback)
         {
             Slika = new InMemoryRandomAccessStream();
             try
             {
-                await _mediaCapture.CapturePhotoToStreamAsync(ImageEncodingProperties.CreateBmp(), Slika);
+                await MediaCapture.CapturePhotoToStreamAsync(ImageEncodingProperties.CreateBmp(), Slika);
+                BitmapDecoder decoder = await BitmapDecoder.CreateAsync(Slika);
+                SoftwareBitmap softwareBitmap = await decoder.GetSoftwareBitmapAsync();
+                SoftwareBitmap softwareBitmapBGR8 = SoftwareBitmap.Convert(softwareBitmap,
+        BitmapPixelFormat.Bgra8,
+        BitmapAlphaMode.Premultiplied);
+                 SlikaBitmap = new SoftwareBitmapSource();
+                await SlikaBitmap.SetBitmapAsync(softwareBitmapBGR8);
+                callback(SlikaBitmap);
             }
             catch (Exception ex)
             {
@@ -131,5 +143,11 @@ namespace ExterniUredjajKlijentApp.Uposlenici.Helper
 
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnNotifyPropertyChanged([CallerMemberName] string memberName = "")
+        {
+            //? je skracena verzija ako nije null
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(memberName));
+        }
     }
 }

@@ -96,16 +96,17 @@
     <Content Include="ServisConfig.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="RfidConfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainPage.xaml.cs">
-      <DependentUpon>MainPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Uposlenici\Helper\CameraHelper.cs" />
+    <Compile Include="Uposlenici\Helper\RelayCommand.cs" />
     <Compile Include="Uposlenici\Helper\Rfid.cs" />
     <Compile Include="Uposlenici\Model\Dogadjaj.cs" />
     <Compile Include="Uposlenici\Model\Servis\ExterniServis.cs" />
@@ -113,9 +114,6 @@
     <Compile Include="Uposlenici\ViewModel\UposleniciViewModel.cs" />
     <Compile Include="Uposlenici\View\CreateUposlenik.xaml.cs">
       <DependentUpon>CreateUposlenik.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Uposlenici\View\UposleniciDogadjaji.xaml.cs">
-      <DependentUpon>UposleniciDogadjaji.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -139,15 +137,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Uposlenici\View\CreateUposlenik.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Uposlenici\View\UposleniciDogadjaji.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -24,21 +24,13 @@ namespace ExterniUredjajKlijentApp.Uposlenici.View
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
     public sealed partial class CreateUposlenik : Page { 
-        public CameraHelper camera;
+        
+        UposleniciViewModel uposleniciViewModel;
         public CreateUposlenik()
         {
             this.InitializeComponent();
-            this.DataContext = new UposleniciViewModel();
-            camera = new CameraHelper(PreviewControl);
-            camera.InitializeCameraAsync();
-        }
-
-        private async void Button_Click(object sender, RoutedEventArgs e)
-        {
-            await camera.TakePhotoAsync();
-            BitmapImage bitmapImage = new BitmapImage();
-            bitmapImage.SetSource(camera.Slika);
-            SlikaControl.Source = bitmapImage;
+            uposleniciViewModel = new UposleniciViewModel(PreviewControl);
+            this.DataContext = uposleniciViewModel;
         }
     }
 }
