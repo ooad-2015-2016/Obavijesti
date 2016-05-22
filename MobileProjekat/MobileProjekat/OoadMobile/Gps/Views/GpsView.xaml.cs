@@ -28,9 +28,10 @@ namespace MobileProjekat.OoadMobile.Gps.Views
         public GpsView()
         {
             this.InitializeComponent();
+            //moze se mijenjati da bude mapa sa ulicama ili satelitski snimak (ako ima i 3D ili cak streetview)
             mapa.Style = MapStyle.Aerial3DWithRoads;
             mapa.ZoomLevel = 20;
-            this.DataContext = new GpsViewModel();
+            this.DataContext = new GpsViewModel(mapa);
         }
     }
 }

@@ -14,6 +14,7 @@ using System.Windows.Input;
 
 namespace MobileProjekat.OoadMobile.Main.ViewModels
 {
+    //Obicni ViewModel za navigaciju na 3 views
     class MainMenuViewModel
     {
         public ICommand Contact { get; set; }
@@ -24,9 +25,11 @@ namespace MobileProjekat.OoadMobile.Main.ViewModels
         public MainMenuViewModel()
         {
             NavigationService = new NavigationService();
-            Contact = new RelayCommand<object>((object parametar) => NavigationService.Navigate(typeof(ComunicationView), new CommunicationViewModel()), (object parametar) => true);
-            Gps = new RelayCommand<object>((object parametar) => NavigationService.Navigate(typeof(GpsView), new GpsViewModel()), (object parametar) => true);
-            Accel = new RelayCommand<object>((object parametar) => NavigationService.Navigate(typeof(AccelView), new AccelViewModel()), (object parametar) => true);
+            //mogu se i obe metode u relaycommand staviti inline
+            //plus je da se ne mora se pisati metoda, minus kad se radi debug tesko je debagirati tacno dio koji poziva metodu 
+            Contact = new RelayCommand<object>((object parametar) => NavigationService.Navigate(typeof(ComunicationView)), (object parametar) => true);
+            Gps = new RelayCommand<object>((object parametar) => NavigationService.Navigate(typeof(GpsView)), (object parametar) => true);
+            Accel = new RelayCommand<object>((object parametar) => NavigationService.Navigate(typeof(AccelView)), (object parametar) => true);
         }
     }
 }

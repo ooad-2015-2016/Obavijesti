@@ -8,37 +8,42 @@
     xmlns:Charts="using:Syncfusion.UI.Xaml.Charts"
     xmlns:Gauges="using:Syncfusion.UI.Xaml.Gauges"
     mc:Ignorable="d">
-
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <!--Ne zaboraviti dodati namespace iznad za kontrole i reference na biblioteku u References-->
+        <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="3*"/>
-            <RowDefinition Height="6*"/>
+            <RowDefinition Height="6*" />
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
+        <!--Dugme za pokretanje ocitanja-->
         <Button Content="Pokreni Ocitanje" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Command="{Binding PokreniOcitanje}"/>
-        <Charts:SfChart Header="X osa" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" >
+        <!--Linijski Graf sa naslovom grafa-->
+        <Charts:SfChart Header="Accelerometar X vrijednosti" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" >
+            <!--Naslovi uz x i y osu-->
             <Charts:SfChart.PrimaryAxis>
                 <Charts:CategoryAxis Header="Vrijeme" FontSize="14"/>
             </Charts:SfChart.PrimaryAxis>
             <Charts:SfChart.SecondaryAxis>
                 <Charts:NumericalAxis Header="Vrijednost ose" FontSize="14"/>
             </Charts:SfChart.SecondaryAxis>
+            <!--Prikaz jednog grafa, moze ih vise odjednom na isti crtez ako se navedu jedan ispod drugog-->
+            <!--Ovo je za liniju na grafu i koristi kolekciju AccelOcitanja XBinding i Y su sta ce uzeti kao vrijednosti za tacke na grafu iz te kolekcije-->
             <Charts:LineSeries Label="Lezi a idje" ItemsSource="{Binding HistorijatZValue}" XBindingPath="Milisec" YBindingPath="Vrijednost" />
         </Charts:SfChart>
-
-        <Gauges:SfCircularGauge x:Name="gauge" Grid.Row="2">
+        <!--Circular gauge, kontrola sa raznim parametrima za crtanje, bitno je povezati vrijednost igle sa binding-->
+        <Gauges:SfCircularGauge x:Name="gauge" Grid.Row="2" Background="black">
             <Gauges:SfCircularGauge.Scales>
                 <Gauges:CircularScale  StartAngle="135" 
                                    SweepAngle="270" 
                                    StartValue="-10"
                                    EndValue="10"
                                    Interval="1"
-                                   
                                        >
+                    <!--Igla, moze biti raznih oblika, trenutni oblik ne lici na iglu doduse-->
                     <Gauges:CircularScale.Pointers>
                         <Gauges:CircularPointer 
                             Value="{Binding XValue}"
@@ -52,7 +57,7 @@
                 </Gauges:CircularScale>
             </Gauges:SfCircularGauge.Scales>
         </Gauges:SfCircularGauge>
+        <!--Digitalni prikaz, bitno je binding napraviti-->
         <Gauges:SfDigitalGauge  HorizontalAlignment="Left"  VerticalAlignment="Top" Grid.Row="3" Value="{Binding YValue}"/>
-
     </Grid>
 </Page>

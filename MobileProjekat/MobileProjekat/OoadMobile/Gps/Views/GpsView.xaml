@@ -12,7 +12,6 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -20,7 +19,7 @@
         </Grid.ColumnDefinitions>
         <TextBlock Text="{Binding Lokacija}" />
         <TextBlock Text="{Binding Adresa}"  Grid.Row="1"/>
-        <TextBlock Text="{Binding Fax}" Grid.Row="2" />
+        <!--Bez oneway binding ne radi, ne zaboraviti ukljuciti maps gore-->
         <maps:MapControl x:Name="mapa" Grid.Row="3" Center="{Binding TrenutnaLokacija, Mode=OneWay}" />
     </Grid>
 </Page>
