@@ -1,0 +1,17 @@
+﻿<Page
+    x:Class="MobileProjekat.OoadMobile.CallISMS.Views.ComunicationView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MobileProjekat.OoadMobile.CallISMS.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <TextBlock TextWrapping="Wrap" Text="{Binding ImeKontakta}"/>
+        <Button Content="Promijeni kontakta" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Command="{Binding PromijeniKontakta}"/>
+        <TextBlock TextWrapping="Wrap" Text="{Binding MetodKomunikacije}"/>
+        <Button Content="Promijeni metod Komunikacije" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Command="{Binding PromijeniKomunikaciju}"/>
+        <Button Content="Komuniciraj" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Command="{Binding Komuniciraj}"/>
+    </StackPanel>
+</Page>
